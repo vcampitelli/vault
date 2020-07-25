@@ -1,1 +1,1 @@
-# Simple PHP Vault Application
+# Simple Vault Application
