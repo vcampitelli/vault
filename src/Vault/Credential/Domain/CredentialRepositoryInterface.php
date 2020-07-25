@@ -7,7 +7,7 @@
  * @since   2020-07-21
  */
 
-namespace Vault\Domain;
+namespace Vault\Credential\Domain;
 
 interface CredentialRepositoryInterface
 {

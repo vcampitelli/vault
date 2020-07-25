@@ -1,0 +1,26 @@
+{
+    "applications": {
+        "app1": {
+            "name": "My Application #1",
+            "credentials": {
+                "development": [1],
+                "staging": [2],
+                "production": [3]
+            }
+        }
+    },
+    "credentials": {
+        "1": {
+            "name": "VAR1_DEV_NAME",
+            "value": "VAR1_DEV__VALUE"
+        },
+        "2": {
+            "name": "VAR2_STAGING_NAME",
+            "value": "VAR2_STAGING__VALUE"
+        },
+        "3": {
+            "name": "VAR3_PRODUCTION_NAME",
+            "value": "VAR3_PRODUCTION__VALUE"
+        }
+    }
+}
