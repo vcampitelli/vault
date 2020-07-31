@@ -1,0 +1,14 @@
+.d-flex {
+  display: flex;
+  justify-content: center;
+}
+.align-items-center {
+  align-items: center;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mr-2 {
+  margin-right: 2rem !important;
+}

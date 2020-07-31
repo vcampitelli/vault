@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Protegendo suas variáveis sensíveis no deploy | Vinícius Campitelli</title>
+
+        <link rel="stylesheet" href="reveal.js/dist/reset.css">
+        <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+        <link rel="stylesheet" href="reveal.js/dist/theme/beige.css">
+        <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
+
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>Protegendo suas variáveis sensíveis no deploy</h1>
+                </section>
+                <section>
+                    <h2>Quem sou eu?</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="mr-2">
+                            <img src="img/profile.png" alt="Vinícius Campitelli" alt="Vinícius Campitelli" class="mb-0"
+                                style="width: 250px">
+                            <h4>Vinícius Campitelli</h4>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>
+                                    Co-fundador do <a href="https://curseduca.com" target="_blank" rel="noopener">Curseduca</a>
+                                </li>
+                                <li>
+                                    Membro do <a href="https://phpsp.org.br" target="_blank" rel="noopener">PHPSP</a>
+                                </li>
+                                <li>
+                                    GitHub e Twitter como <a href="https://twitter.com/vcampitelli" target="_blank"
+                                        rel="noopener">@vcampitelli</a>
+                                </li>
+                                <li>
+                                    Slides em <a href="https://viniciuscampitelli.com/slides-apis-seguras/"
+                                        target="_blank" rel="noopener">viniciuscampitelli.com</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <section>
+                        <h2>Problemática</h2>
+                    </section>
+                    <section>
+                        A 3a regra do <a href="https://12factor.net/" target="_blank" rel="noopener">12 Factor App</a> é
+                        sobre <a href="https://12factor.net/config" target="_blank" rel="noopener">armazenar configurações em variáveis de
+                        ambiente</a>, e podemos fazer isso em diversos sistemas de CI/CD, como GitLab e GitHub.
+                    </section>
+                    <section>
+                        Lá devemos guardar, por exemplo, algumas informações sensíveis, como usuário e senha para conexão com o banco de dados,
+                        credenciais de acesso a serviços (por exemplo APIs).
+                    </section>
+                    <section>
+                        Olhando do ponto de vista de arquitetura de sistemas, isso é ótimo: estamos isolando as configurações que geralmente
+                        variam de acordo com o ambiente (desenvolvimento, homologação, produção, etc) nessas variáveis.
+                    </section>
+                    <section>
+                        Entretanto, sob a ótica de segurança da informação, temos um problema para a área de governança, já que as credenciais
+                        ficam espalhadas sem muito controle, o que dificulta - e muito - a gestão, manutenção e renovação desses acessos.
+                    </section>
+                    <section>
+                        <h3>Referências</h3>
+                        <ul>
+                            <li>
+                                Secure Software Development Life Cycle:
+                               <a href="https://dzone.com/articles/ssdlc-101-what-is-the-secure-software-development"
+                                   target="_blank" rel="noopener">https://dzone.com/articles/ssdlc-101-what-is-the-secure-software-development</a>
+                            </li>
+                            <li>
+                                Capítulo <em>Troque as credenciais regularmente</em> do manual
+                                    <em>"Melhores práticas de segurança no IAM da AWS"</em>:
+                                    <a href="https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/best-practices.html#rotate-credential"
+                                        target="_blank" rel="noopener">https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/best-practices.html</a>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Proposta de solução</h2>
+                    </section>
+                    <section>
+                        Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
+                        consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
+
+                        Isso é conhecido como cofre de credenciais <em>(também é visto como cofre de senhas, mas prefiro o
+                        termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Exemplo de implementação</h2>
+                        <ol>
+                            <li class="fragment">
+                                Instalação de um ambiente de GitLab
+                            </li>
+                            <li class="fragment">
+                                Criação de um repositório de exemplo que lê as variáveis de um arquivo <code>.env</code> e imprime na tela
+                            </li>
+                            <li class="fragment">
+                                Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor
+                            </li>
+                            <li class="fragment">
+                                Criação de um serviço de cofre
+                            </li>
+                            <li class="fragment">
+                                Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente
+                            </li>
+                        </ol>
+
+                    </section>
+                </section>
+                <section>
+                    <h2>Obrigado!</h2>
+                    <div class="d-flex">
+                        <div>
+                            <h4>Slides</h4>
+                            <div><img src="img/qr.jpg" alt="QR Code"></div>
+                            <div><a href="https://viniciuscampitelli.com/slides-apis-seguras/"
+                                    target="_blank">viniciuscampitelli.com</a></div>
+                        </div>
+                        <div>
+                            <h4>Contato</h4>
+                            <div>GitHub e Twitter</div>
+                            <div><a href="https://twitter.com/vcampitelli" target="_blank"
+                                    rel="noopener">@vcampitelli</a></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script src="reveal.js/dist/reveal.js"></script>
+        <script src="reveal.js/plugin/highlight/highlight.js"></script>
+        <script>
+            Reveal.initialize({
+                hash: true,
+                slideNumber: true,
+                mouseWheel: false,
+                history: true,
+                overview: false,
+                plugins: [ RevealHighlight ]
+            });
+        </script>
+    </body>
+</html>
