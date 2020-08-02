@@ -12,3 +12,6 @@
 .mr-2 {
   margin-right: 2rem !important;
 }
+.d-flex.half-columns > div {
+  width: 50%;
+} 

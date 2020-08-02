@@ -52,7 +52,7 @@
                         <h2>Problemática</h2>
                     </section>
                     <section>
-                        A 3a regra do <a href="https://12factor.net/" target="_blank" rel="noopener">12 Factor App</a> é
+                        A 3&ordf; regra do <a href="https://12factor.net/" target="_blank" rel="noopener">12 Factor App</a> é
                         sobre <a href="https://12factor.net/config" target="_blank" rel="noopener">armazenar configurações em variáveis de
                         ambiente</a>, e podemos fazer isso em diversos sistemas de CI/CD, como GitLab e GitHub.
                     </section>
@@ -90,11 +90,78 @@
                         <h2>Proposta de solução</h2>
                     </section>
                     <section>
-                        Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
-                        consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
+                        <p>
+                            Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
+                            consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
+                        </p>
 
-                        Isso é conhecido como cofre de credenciais <em>(também é visto como cofre de senhas, mas prefiro o
-                        termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
+                        <p class="fragment">
+                            Isso é conhecido como cofre de credenciais <em>(também é visto como cofre de senhas, mas prefiro o
+                            termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
+                        </p>
+                    </section>
+                </section>
+                <section>
+                    <section data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Configuração das Variáveis de Ambiente</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <h4 data-id="problem-title">Problemática</h4>
+                                <ul>
+                                    <li>Dezenas de entradas</li>
+                                    <li>Mistura entre variáveis de staging, produção e outros ambientes</li>
+                                    <li>Valores expostos a todos os membros do repositório</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 data-id="solution-title">Solução</h4>
+                                <ul>
+                                    <li>Uma ou duas únicas entradas para se identificar no cofre</li>
+                                    <li>Valores expostos apenas aos gestores</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Visão da governança sobre as credenciais</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <h4 data-id="problem-title">Problemática</h4>
+                                <ul>
+                                    <li>Não possui ou controla em uma ferramenta externa <em>(às vezes até em Excel)</em></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 data-id="solution-title">Solução</h4>
+                                <ul>
+                                    <li>Centralizado em um único serviço</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Rotação de chaves</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <h4 data-id="problem-title">Problemática</h4>
+                                <ul>
+                                    <li>Manual e sucinto a erros</li>
+                                    <li>Muitas vezes só feita após algum vazamento ou saída de algum membro da equipe</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 data-id="solution-title">Solução</h4>
+                                <ul>
+                                    <li>Automática e programada em períodos de tempos pré-determinados</li>
+                                </ul>
+                            </div>
+                        </div>
                     </section>
                 </section>
                 <section>
@@ -117,8 +184,61 @@
                                 Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente
                             </li>
                         </ol>
-
                     </section>
+                    <section>
+                        <h3>1. Instalação de um ambiente de GitLab</h3>
+                        <img src="img/01-gitlab.jpg" alt="Ambiente do GitLab">
+                    </section>
+                    <section>
+                        <h3>2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <pre><code></code></pre>
+                            </div>
+                            <div>
+                                <img src="img/02-env-script.jpg" alt="Script de leitura de arquivo .env">
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <pre><code></code></pre>
+                            </div>
+                            <div><img src="img/03-deploy.jpg" alt="Script de leitura de arquivo .env"></div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>4. Criação de um serviço de cofre</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <pre><code></code></pre>
+                            </div>
+                            <div><img src="img/04-vault.jpg" alt="Serviço de cofre"></div>
+                        </div>
+                        <a href="https://github.com/vcampitelli/vault/tree/master/api">github.com/vcampitelli/vault/tree/master/api</a>
+                    </section>
+                    <section>
+                        <h3>5. Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <pre><code></code></pre>
+                            </div>
+                            <div><img src="img/05-script.jpg" alt="Script de deploy no CI/CD do GitLab"></div>
+                        </div>
+                        <a href="https://github.com/vcampitelli/vault/blob/master/client/vault-client.py">Ver código-fonte do script</a>
+                    </section>
+                </section>
+                <section>
+                    <h2>Conclusão</h2>
+                    <h3>Devo usar um serviço de cofre quando há...</h3>
+                    <ul>
+                        <li>Muitas variáveis de ambiente espalhadas em repositórios;</li>
+                        <li>Necessidade de não exibir credenciais a alguns membros do repositório;</li>
+                        <li>Alta rotatividade de funcionários;</li>
+                        <li>Equipe de governança de TI e/ou segurança da informação <em>(GRC)</em> para controle e centralização.</li>
+                    </ul>
                 </section>
                 <section>
                     <h2>Obrigado!</h2>
@@ -126,14 +246,17 @@
                         <div>
                             <h4>Slides</h4>
                             <div><img src="img/qr.jpg" alt="QR Code"></div>
-                            <div><a href="https://viniciuscampitelli.com/slides-apis-seguras/"
-                                    target="_blank">viniciuscampitelli.com</a></div>
+                            <div>
+                                <a href="https://viniciuscampitelli.com/slides-apis-seguras/" target="_blank"
+                                    rel="noopener">viniciuscampitelli.com</a>
+                            </div>
                         </div>
                         <div>
                             <h4>Contato</h4>
                             <div>GitHub e Twitter</div>
-                            <div><a href="https://twitter.com/vcampitelli" target="_blank"
-                                    rel="noopener">@vcampitelli</a></div>
+                            <div>
+                                <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
+                            </div>
                         </div>
                     </div>
                 </section>
