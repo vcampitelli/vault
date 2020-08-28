@@ -68,8 +68,47 @@
                         Entretanto, sob a ótica de segurança da informação, temos um problema para a área de governança, já que as credenciais
                         ficam espalhadas sem muito controle, o que dificulta - e muito - a gestão, manutenção e renovação desses acessos.
                     </section>
-                    <section>
-                        <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual">
+                    <section id="governance">
+                        <p>Governança de TI</p>
+                        <div class="d-flex">
+                            <div class="fragment fade-down" data-fragment-index="1">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="2">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="3">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="4">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="5">
+                                |
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="fragment fade-down" data-fragment-index="1">
+                                <p>repositório 1</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="2">
+                                <p>repositório 2</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="3">
+                                <p>repositório 3</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="4">
+                                <p>repositório 4</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="5">
+                                <p>repositório n</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                        </div>
                     </section>
                     <section>
                         <h3>Referências</h3>
@@ -101,7 +140,10 @@
                         termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
                     </section>
                     <section>
-                        <img src="img/diagrams/02-proposta.png" alt="Proposta de solução">
+                        <div class="r-stack">
+                            <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual" class="fragment fade-out" data-fragment-index="0">
+                            <img src="img/diagrams/02-proposta.png" alt="Proposta de solução" class="fragment current-visible" data-fragment-index="0">
+                        </div>
                     </section>
                 </section>
                 <section>
@@ -123,8 +165,8 @@
                             <div>
                                 <h4 data-id="solution-title">Solução</h4>
                                 <ul>
-                                    <li>Uma ou duas únicas entradas para se identificar no cofre</li>
-                                    <li>Valores expostos apenas aos gestores</li>
+                                    <li>Apenas entradas para se identificar no cofre</li>
+                                    <li>Acesso aos valores via cofre autorizado apenas aos gestores</li>
                                 </ul>
                             </div>
                         </div>
@@ -190,27 +232,41 @@
                     </section>
                     <section>
                         <h3>1. Instalação de um ambiente de GitLab</h3>
-                        <img src="img/01-gitlab.jpg" alt="Ambiente do GitLab">
+                        <img src="img/01-gitlab.png" alt="Ambiente do GitLab">
                     </section>
                     <section>
                         <h3>2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
-                        <div class="d-flex half-columns">
-                            <div>
-                                <pre><code></code></pre>
-                            </div>
-                            <div>
-                                <img src="img/02-env-script.jpg" alt="Script de leitura de arquivo .env">
-                            </div>
+                        <pre class="mb-0"><code class="php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
+$handler = fopen($file, 'r');
+while (($line = fgets($handler)) !== false) {
+    list($name, $value) = explode('=', $line, 2);
+    $_ENV[$name] = trim($value);
+}
+var_dump($_ENV);</code></pre>
+                        <div class="fragment">
+                            <p class="my-0">&#8595;</p>
+                            <pre class="my-0" style="box-shadow: none;"><b>array</b> <i>(size=7)</i>
+  'AWS_ACCESS_KEY_ID' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'id'</font> <i>(length=2)</i>
+  'AWS_SECRET_ACCESS_KEY' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'secret'</font> <i>(length=6)</i>
+  'AWS_DEFAULT_REGION' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'us-east-1'</font> <i>(length=9)</i>
+  'MONGO_HOST' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'localhost'</font> <i>(length=9)</i>
+  'MONGO_USER' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'mymongo'</font> <i>(length=7)</i>
+  'MONGO_PASSWORD' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'"CDyV_n,$(3x/=`ogv9R'</font> <i>(length=20)</i>
+</pre>
+                            <a href="https://github.com/vcampitelli/vault/blob/master/repository/index.php" class="smallest" target="_blank" rel="noopener">ver código-fonte do script</a>
                         </div>
                     </section>
                     <section>
                         <h3>3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
-                        <div class="d-flex half-columns">
-                            <div>
-                                <pre><code></code></pre>
-                            </div>
-                            <div><img src="img/03-deploy.jpg" alt="Script de leitura de arquivo .env"></div>
-                        </div>
+                        <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+  - apt-get -y update && apt-get install -y openssh-client
+  - eval $(ssh-agent -s)
+
+deploy_stage:
+  script:
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - scp -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+                        <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do arquivo</a>
                     </section>
                     <section>
                         <h3>4. Criação de um serviço de cofre</h3>
@@ -226,7 +282,16 @@
                         <h3>5. Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente</h3>
                         <div class="d-flex half-columns">
                             <div>
-                                <pre><code></code></pre>
+                                <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+  - apt-get -y update && apt-get install -y openssh-client
+  - eval $(ssh-agent -s)
+
+deploy_stage:
+  script:
+    <span class="fragment">- vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env</span>
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
+    - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
                             </div>
                             <div><img src="img/05-script.jpg" alt="Script de deploy no CI/CD do GitLab"></div>
                         </div>
@@ -268,15 +333,6 @@
 
         <script src="reveal.js/dist/reveal.js"></script>
         <script src="reveal.js/plugin/highlight/highlight.js"></script>
-        <script>
-            Reveal.initialize({
-                hash: true,
-                slideNumber: true,
-                mouseWheel: false,
-                history: true,
-                overview: false,
-                plugins: [ RevealHighlight ]
-            });
-        </script>
+        <script src="js/app.js"></script>
     </body>
 </html>
