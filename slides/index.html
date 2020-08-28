@@ -16,7 +16,7 @@
     <body>
         <div class="reveal">
             <div class="slides">
-                <section>
+                <section class="slide-title">
                     <h1>Protegendo suas variáveis sensíveis no deploy</h1>
                 </section>
                 <section>
@@ -69,6 +69,9 @@
                         ficam espalhadas sem muito controle, o que dificulta - e muito - a gestão, manutenção e renovação desses acessos.
                     </section>
                     <section>
+                        <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual">
+                    </section>
+                    <section>
                         <h3>Referências</h3>
                         <ul>
                             <li>
@@ -90,15 +93,15 @@
                         <h2>Proposta de solução</h2>
                     </section>
                     <section>
-                        <p>
-                            Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
-                            consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
-                        </p>
-
-                        <p class="fragment">
-                            Isso é conhecido como cofre de credenciais <em>(também é visto como cofre de senhas, mas prefiro o
-                            termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
-                        </p>
+                        Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
+                        consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
+                    </section>
+                    <section>
+                        Isso é conhecido como cofre de credenciais <em>(também é chamado de cofre de senhas, mas prefiro o
+                        termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
+                    </section>
+                    <section>
+                        <img src="img/diagrams/02-proposta.png" alt="Proposta de solução">
                     </section>
                 </section>
                 <section>
