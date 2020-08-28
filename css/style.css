@@ -1,5 +1,88 @@
-.h4 {
-  font-size: 1em !important;
+/*
+ * Theme overriding
+ */
+.reveal-viewport {
+  background: #fafafa;
+  background: -moz-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, white), color-stop(100%, #ddd));
+  background: -webkit-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: -o-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: -ms-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: radial-gradient(center, circle cover, white 0%, #ddd 100%);
+}
+.reveal {
+  font-family: "Source Sans Pro", monospace;
+  font-size: 36px;
+  font-weight: normal;
+  color: #444;
+}
+.slide-background.slide-title {
+  background: #3fa2f9;
+  background: radial-gradient(center, circle cover, #3fa2f9 0%, #138ffb 100%);
+}
+.reveal a {
+  color: #138ffb;
+}
+.reveal a:hover,
+.reveal a:focus {
+  color: #3fa2f9;
+}
+.slide-title > h1 {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  font-size: 2.75em;
+  font-weight: 700;
+}
+.reveal h1, .reveal .h1,
+.reveal h2, .reveal .h2,
+.reveal h3, .reveal .h3,
+.reveal h4, .reveal .h4,
+.reveal h5, .reveal .h5,
+.reveal h6, .reveal .h6 {
+  color: #333;
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-variant: small-caps;
+}
+.reveal h2,
+.reveal .h2 {
+  font-size: 1.4em;
+}
+.reveal h2 {
+  margin-bottom: 50px;
+}
+.reveal h3,
+.reveal .h3 {
+  font-size: 1.3em;
+}
+.reveal h4,
+.reveal .h4 {
+  font-size: 1.2em;
+}
+.reveal h5,
+.reveal .h5 {
+  font-size: 1.1em;
+}
+.reveal h6,
+.reveal .h6 {
+  font-size: 1em;
+}
+
+/*
+ * Custom elements
+ */
+h2::after {
+  content: "";
+  display: block;
+  border-bottom: 5px #037FEB solid;
+  width: 50px;
+  margin: 0 auto;
+}
+h4[data-id="problem-title"],
+h4[data-id="solution-title"] {
+  border-bottom: 3px #037FEB solid;
+  color: #6495ed;
 }
 .d-flex {
   display: flex;
@@ -8,13 +91,15 @@
 .align-items-center {
   align-items: center;
 }
-#governance > p {
+#governance > div > p {
   margin: 0;
-  padding: 10px;
-  background: #fff;
-  border: 3px #666 solid;
+  line-height: 1;
+  padding: 15px 0 10px;
+  background: #fafafa;
+  border: 2px #aaa solid;
+  border-radius: 3px;
 }
-#governance > .d-flex > div > p {
+#governance > div > .d-flex > div > p {
   font-size: 0.5em;
   margin: 10px 0;
   font-family: monospace;
@@ -27,10 +112,10 @@
 #governance div + div {
   margin-left: 0.5em;
 }
-#governance > p + .d-flex > .fragment {
-  line-height: 0.7;
+#governance > div > p + .d-flex > .fragment {
+  line-height: 0.75;
   flex-grow: 1;
-  color: #666;
+  color: #aaa;
 }
 .my-0 {
   margin-top: 0 !important;
@@ -43,11 +128,35 @@
   margin-right: 2rem !important;
 }
 .d-flex.half-columns > div {
-  width: 50%;
+  flex-basis: 50%;
+  flex-grow: 0;
+}
+.d-flex.one-third-columns > div {
+  flex-basis: 33%;
+  flex-grow: 0;
 }
 .small {
   font-size: 0.7em;
 }
 .smallest {
   font-size: 0.5em;
+}
+svg path {
+  fill: #666;
+}
+
+/* Highlight */
+code[class*="language-"],
+pre[class*="language-"] {
+  font-size: 13px;
+}
+.token.string {
+  color: #f8c555;
+}
+.line-highlight:before {
+  color: #aaa;
+  box-shadow: none;
+}
+.line-highlight {
+  margin-top: 1.25em;
 }

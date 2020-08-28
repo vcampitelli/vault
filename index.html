@@ -4,20 +4,21 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-        <title>Protegendo suas variáveis sensíveis no deploy | Vinícius Campitelli</title>
+        <title>Protegendo suas Variáveis Sensíveis no Deploy | Vinícius Campitelli</title>
 
         <link rel="stylesheet" href="reveal.js/dist/reset.css">
         <link rel="stylesheet" href="reveal.js/dist/reveal.css">
         <link rel="stylesheet" href="reveal.js/dist/theme/beige.css">
-        <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
 
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/prism.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <div class="reveal">
-            <div class="slides">
+            <section class="slides">
                 <section class="slide-title">
-                    <h1>Protegendo suas variáveis sensíveis no deploy</h1>
+                    <h1>Protegendo suas Variáveis Sensíveis no Deploy</h1>
                 </section>
                 <section>
                     <h2>Quem sou eu?</h2>
@@ -25,7 +26,7 @@
                         <div class="mr-2">
                             <img src="img/profile.png" alt="Vinícius Campitelli" alt="Vinícius Campitelli" class="mb-0"
                                 style="width: 250px">
-                            <h4>Vinícius Campitelli</h4>
+                            <h4 class="h6">Vinícius Campitelli</h4>
                         </div>
                         <div>
                             <ul>
@@ -36,77 +37,87 @@
                                     Membro do <a href="https://phpsp.org.br" target="_blank" rel="noopener">PHPSP</a>
                                 </li>
                                 <li>
-                                    GitHub e Twitter como <a href="https://twitter.com/vcampitelli" target="_blank"
-                                        rel="noopener">@vcampitelli</a>
+                                    GitHub e Twitter como <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
                                 </li>
                                 <li>
-                                    Slides em <a href="https://viniciuscampitelli.com/slides-apis-seguras/"
-                                        target="_blank" rel="noopener">viniciuscampitelli.com</a>
+                                    Slides em <a href="https://viniciuscampitelli.com/vault/" target="_blank" rel="noopener">viniciuscampitelli.com</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </section>
                 <section>
-                    <section>
+                    <section data-auto-animate>
                         <h2>Problemática</h2>
-                    </section>
-                    <section>
-                        A 3&ordf; regra do <a href="https://12factor.net/" target="_blank" rel="noopener">12 Factor App</a> é
-                        sobre <a href="https://12factor.net/config" target="_blank" rel="noopener">armazenar configurações em variáveis de
-                        ambiente</a>, e podemos fazer isso em diversos sistemas de CI/CD, como GitLab e GitHub.
-                    </section>
-                    <section>
-                        Lá devemos guardar, por exemplo, algumas informações sensíveis, como usuário e senha para conexão com o banco de dados,
-                        credenciais de acesso a serviços (por exemplo APIs).
-                    </section>
-                    <section>
-                        Olhando do ponto de vista de arquitetura de sistemas, isso é ótimo: estamos isolando as configurações que geralmente
-                        variam de acordo com o ambiente (desenvolvimento, homologação, produção, etc) nessas variáveis.
-                    </section>
-                    <section>
-                        Entretanto, sob a ótica de segurança da informação, temos um problema para a área de governança, já que as credenciais
-                        ficam espalhadas sem muito controle, o que dificulta - e muito - a gestão, manutenção e renovação desses acessos.
-                    </section>
-                    <section id="governance">
-                        <p>Governança de TI</p>
-                        <div class="d-flex">
-                            <div class="fragment fade-down" data-fragment-index="1">
-                                |
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="2">
-                                |
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="3">
-                                |
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="4">
-                                |
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="5">
-                                |
-                            </div>
+                        <div>
+                            A 3&ordf; regra do <a href="https://12factor.net/" target="_blank" rel="noopener">12 Factor App</a> é
+                            sobre <a href="https://12factor.net/config" target="_blank" rel="noopener">armazenar configurações em variáveis de
+                            ambiente</a>, e podemos fazer isso em diversos sistemas de CI/CD, como GitLab e GitHub.
                         </div>
-                        <div class="d-flex">
-                            <div class="fragment fade-down" data-fragment-index="1">
-                                <p>repositório 1</p>
-                                <img src="img/gitlab_ci_vars_without_vault.png">
+                    </section>
+                    <section data-auto-animate>
+                        <h2>Problemática</h2>
+                        <div>
+                            Lá devemos guardar algumas informações sensíveis, como usuário e senha para conexão com o banco de dados,
+                            credenciais de acesso a serviços <em>(por exemplo APIs)</em>em>.
+                        </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h2>Problemática</h2>
+                        <div>
+                            Olhando do ponto de vista de arquitetura de sistemas, isso é ótimo: estamos isolando as configurações que geralmente
+                            variam de acordo com o ambiente <em>(desenvolvimento, homologação, produção, etc)</em> nessas variáveis.
+                        </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h2>Problemática</h2>
+                        <div>
+                            Entretanto, sob a ótica de segurança da informação, temos um problema para a área de governança, já que as credenciais
+                            ficam espalhadas sem muito controle, o que dificulta - e muito - a gestão, manutenção e renovação desses acessos.
+                        </div>
+                    </section>
+                    <section id="governance" data-auto-animate>
+                        <h2>Problemática</h2>
+                        <div>
+                            <p class="h6">Governança de TI</p>
+                            <div class="d-flex">
+                                <div class="fragment fade-down" data-fragment-index="1">
+                                    |
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="2">
+                                    |
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="3">
+                                    |
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="4">
+                                    |
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="5">
+                                    |
+                                </div>
                             </div>
-                            <div class="fragment fade-down" data-fragment-index="2">
-                                <p>repositório 2</p>
-                                <img src="img/gitlab_ci_vars_without_vault.png">
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="3">
-                                <p>repositório 3</p>
-                                <img src="img/gitlab_ci_vars_without_vault.png">
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="4">
-                                <p>repositório 4</p>
-                                <img src="img/gitlab_ci_vars_without_vault.png">
-                            </div>
-                            <div class="fragment fade-down" data-fragment-index="5">
-                                <p>repositório n</p>
-                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            <div class="d-flex">
+                                <div class="fragment fade-down" data-fragment-index="1">
+                                    <p>repositório 1</p>
+                                    <img src="img/gitlab_ci_vars_without_vault.png">
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="2">
+                                    <p>repositório 2</p>
+                                    <img src="img/gitlab_ci_vars_without_vault.png">
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="3">
+                                    <p>repositório 3</p>
+                                    <img src="img/gitlab_ci_vars_without_vault.png">
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="4">
+                                    <p>repositório ...</p>
+                                    <img src="img/gitlab_ci_vars_without_vault.png">
+                                </div>
+                                <div class="fragment fade-down" data-fragment-index="5">
+                                    <p>repositório n</p>
+                                    <img src="img/gitlab_ci_vars_without_vault.png">
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -128,21 +139,31 @@
                     </section>
                 </section>
                 <section>
-                    <section>
+                    <section data-auto-animate>
                         <h2>Proposta de solução</h2>
+                        <div>
+                            Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
+                            consultamos um gerenciador de senhas e injetamos como variáveis de ambiente em tempo de execução.
+                        </div>
                     </section>
-                    <section>
-                        Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
-                        consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
+                    <section data-auto-animate>
+                        <h2>Proposta de solução</h2>
+                        <div>
+                            Esse gerenciador de senhas é conhecido como cofre de credenciais <em>(também é chamado de cofre de senhas, mas prefiro o
+                            termo mais genérico pois podemos armazenar qualquer tipo de informação sensível)</em>
+                        </div>
                     </section>
-                    <section>
-                        Isso é conhecido como cofre de credenciais <em>(também é chamado de cofre de senhas, mas prefiro o
-                        termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
-                    </section>
-                    <section>
+                    <section data-auto-animate>
+                        <h2>Proposta de solução</h2>
                         <div class="r-stack">
-                            <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual" class="fragment fade-out" data-fragment-index="0">
-                            <img src="img/diagrams/02-proposta.png" alt="Proposta de solução" class="fragment fade-down current-visible" data-fragment-index="0">
+                            <div class="fragment fade-out" data-fragment-index="0">
+                                <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual" data-width="739"><br>
+                                <span class="smallest">Cenário atual</span>
+                            </div>
+                            <div class="fragment fade-down current-visible" data-fragment-index="0">
+                                <img src="img/diagrams/02-proposta.png" alt="Proposta de solução" data-width="739"><br>
+                                <span class="smallest">Proposta de solução</span>
+                            </div>
                         </div>
                     </section>
                 </section>
@@ -153,7 +174,7 @@
                     <section class="comparison" data-auto-animate>
                         <h2 data-id="comparison-title">Comparações</h2>
                         <h3 data-id="comparison-subtitle">Configuração das Variáveis de Ambiente</h3>
-                        <div class="d-flex half-columns">
+                        <div class="d-flex half-columns fragment">
                             <div>
                                 <h4 data-id="problem-title">Problemática</h4>
                                 <ul>
@@ -165,15 +186,23 @@
                             <div>
                                 <h4 data-id="solution-title">Solução</h4>
                                 <ul>
-                                    <li>Apenas entradas para se identificar no cofre</li>
-                                    <li>Acesso aos valores via cofre autorizado apenas aos gestores</li>
+                                    <li>Apenas entradas para se identificar no Vault</li>
+                                    <li>Acesso aos valores autorizado apenas aos gestores</li>
                                 </ul>
                             </div>
                         </div>
                     </section>
                     <section class="comparison" data-auto-animate>
                         <h2 data-id="comparison-title">Comparações</h2>
-                        <h3 data-id="comparison-subtitle">Visão da governança sobre as credenciais</h3>
+                        <h3 data-id="comparison-subtitle">Configuração das Variáveis de Ambiente</h3>
+                        <div class="r-stack">
+                            <img src="img/gitlab_ci_vars_without_vault.png" class="my-0 fragment fade-out" data-fragment-index="0" data-width="877" style="max-height: none;">
+                            <img src="img/gitlab_ci_vars_with_vault.png" class="my-0 fragment" data-fragment-index="0" data-width="877" style="max-height: none;">
+                        </div>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Visão da Governança sobre as Credenciais</h3>
                         <div class="d-flex half-columns">
                             <div>
                                 <h4 data-id="problem-title">Problemática</h4>
@@ -223,10 +252,10 @@
                                 Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor
                             </li>
                             <li class="fragment">
-                                Criação de um serviço de cofre
+                                Criação de um Serviço de Vault
                             </li>
                             <li class="fragment">
-                                Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente
+                                Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente
                             </li>
                         </ol>
                     </section>
@@ -236,7 +265,7 @@
                     </section>
                     <section>
                         <h3 class="h4">2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
-                        <pre class="mb-0"><code class="php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
+                        <pre class="mb-0"><code class="language-php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
 $handler = fopen($file, 'r');
 while (($line = fgets($handler)) !== false) {
     list($name, $value) = explode('=', $line, 2);
@@ -258,7 +287,7 @@ var_dump($_ENV);</code></pre>
                     </section>
                     <section>
                         <h3 class="h4">3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
-                        <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+                        <pre class="mb-0"><code class="language-yaml" data-noescape>before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
 
@@ -266,12 +295,12 @@ deploy_stage:
   script:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - scp -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
-                        <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do arquivo</a>
+                        <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do <code>.gitlab-ci.yml</code></a>
                     </section>
-                    <section>
-                        <h3 class="h4">4. Criação de um serviço de cofre</h3>
-                        <div class="r-stack">
-                            <pre class="fragment fade-out" data-fragment-index="0"><code class="json">{
+                    <section data-auto-animate>
+                        <h3 class="h4">4. Criação de um Serviço de Vault</h3>
+                        <div>
+                            <pre class="mb-0"><code class="language-json">{
   "applications": {
     "myrepository": {
       "name": "My Repository",
@@ -302,34 +331,32 @@ deploy_stage:
       "value": "veez9aeg5OquiuT1aimek4xo"
     }
   }
-}
-</code></pre>
-                            <div class="fragment fade-down current-visible" data-fragment-index="0">
-                                <img src="img/04-vault.jpg" alt="Serviço de cofre" data-width="770">
+}</code></pre>
+                                <a href="https://github.com/vcampitelli/vault/tree/master/api" class="smallest" target="_blank" rel="noopener">ver código-fonte do serviço</a>
                             </div>
-                        </div>
-                        <a href="https://github.com/vcampitelli/vault/tree/master/api" class="smallest" target="_blank" rel="noopener">ver código-fonte do serviço</a>
                     </section>
-                    <section>
-                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente</h3>
-                        <div class="r-stack">
-                            <div class="fragment fade-out" data-fragment-index="0">
-                                <pre class="mb-0"><code class="python">#!/usr/bin/env python3
-
+                    <section data-auto-animate>
+                        <h3 class="h4">4. Criação de um Serviço de Vault</h3>
+                        <div>
+                            <img src="img/04-vault.jpg" alt="Serviço de Vault" data-width="770">
+                        </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
+                        <div>
+                            <pre class="mb-0"><code class="language-python">#!/usr/bin/env python3
 import requests
 import sys
 
-VAULT_HOST=sys.argv[1]
-APP_NAME=sys.argv[2]
-APP_ENVIRONMENT=sys.argv[3]
+VAULT_HOST = sys.argv[1]
+APP_NAME = sys.argv[2]
+APP_ENVIRONMENT = sys.argv[3]
 
 response = requests.get(
     "%s/application/%s/credentials/%s" %
-    (VAULT_HOST, APP_NAME, APP_ENVIRONMENT)
+        (VAULT_HOST, APP_NAME, APP_ENVIRONMENT)
 )
-
 response.raise_for_status()
-
 response = response.json()
 if 'data' in response and 'credentials' in response['data']:
     credentials = response['data']['credentials']
@@ -338,49 +365,69 @@ if 'data' in response and 'credentials' in response['data']:
             print("%s=%s" % (credential['name'], credential['value']))
 </code></pre>
                                 <a href="https://github.com/vcampitelli/vault/blob/master/client/vault-client.py" class="smallest" target="_blank" rel="noopener">
-                                    Ver script que consome a API do vault
+                                    ver script que consome a API do vault
                                 </a>
                             </div>
-                            <div class="fragment fade-down" data-fragment-index="0">
-                                <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
+                        <div>
+                            <pre class="mb-0" data-line="7"><code class="language-yaml">before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
 
 deploy_stage:
   script:
-    <span class="fragment">- vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env</span>
+    - vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
     - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
                                 <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">
-                                    Ver <code>.gitlab-ci.yml</code> modificado para invocar o script
+                                    ver <code>.gitlab-ci.yml</code> modificado para invocar o script
                                 </a>
                             </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
+                        <div>
+                            <img src="img/05-deploy.jpg" class="my-0" data-height="706">
                         </div>
                     </section>
                 </section>
                 <section>
-                    <h2>Conclusão</h2>
-                    <h3>Devo usar um serviço de cofre quando há...</h3>
+                    <h2>Devo usar um serviço de Vault quando há...</h2>
                     <ul>
-                        <li>Muitas variáveis de ambiente espalhadas em repositórios;</li>
-                        <li>Necessidade de não exibir credenciais a alguns membros do repositório;</li>
-                        <li>Alta rotatividade de funcionários;</li>
-                        <li>Equipe de governança de TI e/ou segurança da informação <em>(GRC)</em> para controle e centralização.</li>
+                        <li class="fragment">Muitas variáveis de ambiente espalhadas em repositórios;</li>
+                        <li class="fragment">Necessidade de não exibir credenciais a alguns membros do repositório;</li>
+                        <li class="fragment">Alta rotatividade de funcionários ou desejo de rotacionar as chaves seguindo boas práticas;</li>
+                        <li class="fragment">Equipe de governança de TI e/ou segurança da informação <em>(GRC)</em> para controle e centralização.</li>
                     </ul>
                 </section>
                 <section>
                     <h2>Obrigado!</h2>
-                    <div class="d-flex">
+                    <div class="d-flex one-third-columns">
                         <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24"/>
+                                    <path d="M11,20 L11,17 C11,16.4477153 11.4477153,16 12,16 C12.5522847,16 13,16.4477153 13,17 L13,20 L15.5,20 C15.7761424,20 16,20.2238576 16,20.5 C16,20.7761424 15.7761424,21 15.5,21 L8.5,21 C8.22385763,21 8,20.7761424 8,20.5 C8,20.2238576 8.22385763,20 8.5,20 L11,20 Z" fill="#000000" opacity="0.3"/>
+                                    <path d="M3,5 L21,5 C21.5522847,5 22,5.44771525 22,6 L22,16 C22,16.5522847 21.5522847,17 21,17 L3,17 C2.44771525,17 2,16.5522847 2,16 L2,6 C2,5.44771525 2.44771525,5 3,5 Z M4.5,8 C4.22385763,8 4,8.22385763 4,8.5 C4,8.77614237 4.22385763,9 4.5,9 L13.5,9 C13.7761424,9 14,8.77614237 14,8.5 C14,8.22385763 13.7761424,8 13.5,8 L4.5,8 Z M4.5,10 C4.22385763,10 4,10.2238576 4,10.5 C4,10.7761424 4.22385763,11 4.5,11 L7.5,11 C7.77614237,11 8,10.7761424 8,10.5 C8,10.2238576 7.77614237,10 7.5,10 L4.5,10 Z" fill="#000000"/>
+                                </g>
+                            </svg>
                             <h4>Slides</h4>
                             <a href="https://viniciuscampitelli.com/vault/" target="_blank" rel="noopener">vcampitelli.github.io</a>
                         </div>
-                        <div style="margin: 0 10px;">
+                        <div>
+                            <svg role="img" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+                            </svg>
                             <h4>GitHub</h4>
-                            <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
+                            <a href="https://github.com/vcampitelli" target="_blank" rel="noopener">vcampitelli</a>
                         </div>
                         <div>
+                            <svg role="img" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"></path>
+                            </svg>
                             <h4>Twitter</h4>
                             <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
                         </div>
@@ -390,7 +437,8 @@ deploy_stage:
         </div>
 
         <script src="reveal.js/dist/reveal.js"></script>
-        <script src="reveal.js/plugin/highlight/highlight.js"></script>
+<!--        <script src="reveal.js/plugin/highlight/highlight.js"></script>-->
+        <script src="js/prism.js"></script>
         <script src="js/app.js"></script>
     </body>
 </html>

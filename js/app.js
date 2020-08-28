@@ -1,10 +1,12 @@
 Reveal.initialize({
+    dependencies: [
+        { src: 'js/prism.js', async: true }
+    ],
     hash: true,
     slideNumber: true,
     mouseWheel: false,
     history: true,
-    overview: false,
-    plugins: [ RevealHighlight ]
+    overview: false
 });
 
 /**
@@ -56,8 +58,12 @@ Reveal.addEventListener( 'ready', event => {
 
     // @see https://stackoverflow.com/a/26893663
     const element = document.querySelector('.slides'),
-        scaleX = element.getBoundingClientRect().width / element.offsetWidth;
+        scaleX = element.getBoundingClientRect().width / element.offsetWidth,
+        scaleY = element.getBoundingClientRect().height / element.offsetHeight;
     document.querySelectorAll('img[data-width]').forEach(node => {
         node.style.width = (node.dataset.width / scaleX) + 'px';
+    });
+    document.querySelectorAll('img[data-height]').forEach(node => {
+        node.style.height = (node.dataset.height / scaleY) + 'px';
     });
 });
