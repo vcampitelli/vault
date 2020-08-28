@@ -1,0 +1,12 @@
+# https://docs.gitlab.com/ee/ci/examples/deployment/composer-npm-deploy.html
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - mkdir -p ~/.ssh
+  - eval $(ssh-agent -s)
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+stage_deploy:
+  script:
+    - vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
+    - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
