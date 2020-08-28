@@ -1,0 +1,396 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Protegendo suas variáveis sensíveis no deploy | Vinícius Campitelli</title>
+
+        <link rel="stylesheet" href="reveal.js/dist/reset.css">
+        <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+        <link rel="stylesheet" href="reveal.js/dist/theme/beige.css">
+        <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
+
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section class="slide-title">
+                    <h1>Protegendo suas variáveis sensíveis no deploy</h1>
+                </section>
+                <section>
+                    <h2>Quem sou eu?</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="mr-2">
+                            <img src="img/profile.png" alt="Vinícius Campitelli" alt="Vinícius Campitelli" class="mb-0"
+                                style="width: 250px">
+                            <h4>Vinícius Campitelli</h4>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>
+                                    Co-fundador do <a href="https://curseduca.com" target="_blank" rel="noopener">Curseduca</a>
+                                </li>
+                                <li>
+                                    Membro do <a href="https://phpsp.org.br" target="_blank" rel="noopener">PHPSP</a>
+                                </li>
+                                <li>
+                                    GitHub e Twitter como <a href="https://twitter.com/vcampitelli" target="_blank"
+                                        rel="noopener">@vcampitelli</a>
+                                </li>
+                                <li>
+                                    Slides em <a href="https://viniciuscampitelli.com/slides-apis-seguras/"
+                                        target="_blank" rel="noopener">viniciuscampitelli.com</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <section>
+                        <h2>Problemática</h2>
+                    </section>
+                    <section>
+                        A 3&ordf; regra do <a href="https://12factor.net/" target="_blank" rel="noopener">12 Factor App</a> é
+                        sobre <a href="https://12factor.net/config" target="_blank" rel="noopener">armazenar configurações em variáveis de
+                        ambiente</a>, e podemos fazer isso em diversos sistemas de CI/CD, como GitLab e GitHub.
+                    </section>
+                    <section>
+                        Lá devemos guardar, por exemplo, algumas informações sensíveis, como usuário e senha para conexão com o banco de dados,
+                        credenciais de acesso a serviços (por exemplo APIs).
+                    </section>
+                    <section>
+                        Olhando do ponto de vista de arquitetura de sistemas, isso é ótimo: estamos isolando as configurações que geralmente
+                        variam de acordo com o ambiente (desenvolvimento, homologação, produção, etc) nessas variáveis.
+                    </section>
+                    <section>
+                        Entretanto, sob a ótica de segurança da informação, temos um problema para a área de governança, já que as credenciais
+                        ficam espalhadas sem muito controle, o que dificulta - e muito - a gestão, manutenção e renovação desses acessos.
+                    </section>
+                    <section id="governance">
+                        <p>Governança de TI</p>
+                        <div class="d-flex">
+                            <div class="fragment fade-down" data-fragment-index="1">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="2">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="3">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="4">
+                                |
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="5">
+                                |
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="fragment fade-down" data-fragment-index="1">
+                                <p>repositório 1</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="2">
+                                <p>repositório 2</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="3">
+                                <p>repositório 3</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="4">
+                                <p>repositório 4</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="5">
+                                <p>repositório n</p>
+                                <img src="img/gitlab_ci_vars_without_vault.png">
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3>Referências</h3>
+                        <ul>
+                            <li>
+                                Secure Software Development Life Cycle:
+                               <a href="https://dzone.com/articles/ssdlc-101-what-is-the-secure-software-development"
+                                   target="_blank" rel="noopener">https://dzone.com/articles/ssdlc-101-what-is-the-secure-software-development</a>
+                            </li>
+                            <li>
+                                Capítulo <em>Troque as credenciais regularmente</em> do manual
+                                    <em>"Melhores práticas de segurança no IAM da AWS"</em>:
+                                    <a href="https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/best-practices.html#rotate-credential"
+                                        target="_blank" rel="noopener">https://docs.aws.amazon.com/pt_br/IAM/latest/UserGuide/best-practices.html</a>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Proposta de solução</h2>
+                    </section>
+                    <section>
+                        Podemos isolar essas informações sensíveis em um serviço externo e, no momento de deploy,
+                        consultamos a API e injetamos como variáveis de ambiente em tempo de execução.
+                    </section>
+                    <section>
+                        Isso é conhecido como cofre de credenciais <em>(também é chamado de cofre de senhas, mas prefiro o
+                        termo mais genérico pois podemos armazenar qualquer tipo de dado de acesso)</em>
+                    </section>
+                    <section>
+                        <div class="r-stack">
+                            <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual" class="fragment fade-out" data-fragment-index="0">
+                            <img src="img/diagrams/02-proposta.png" alt="Proposta de solução" class="fragment fade-down current-visible" data-fragment-index="0">
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Configuração das Variáveis de Ambiente</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <h4 data-id="problem-title">Problemática</h4>
+                                <ul>
+                                    <li>Dezenas de entradas</li>
+                                    <li>Mistura entre variáveis de staging, produção e outros ambientes</li>
+                                    <li>Valores expostos a todos os membros do repositório</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 data-id="solution-title">Solução</h4>
+                                <ul>
+                                    <li>Apenas entradas para se identificar no cofre</li>
+                                    <li>Acesso aos valores via cofre autorizado apenas aos gestores</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Visão da governança sobre as credenciais</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <h4 data-id="problem-title">Problemática</h4>
+                                <ul>
+                                    <li>Não possui ou controla em uma ferramenta externa <em>(às vezes até em Excel)</em></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 data-id="solution-title">Solução</h4>
+                                <ul>
+                                    <li>Centralizado em um único serviço</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Rotação de chaves</h3>
+                        <div class="d-flex half-columns">
+                            <div>
+                                <h4 data-id="problem-title">Problemática</h4>
+                                <ul>
+                                    <li>Manual e sucinto a erros</li>
+                                    <li>Muitas vezes só feita após algum vazamento ou saída de algum membro da equipe</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 data-id="solution-title">Solução</h4>
+                                <ul>
+                                    <li>Automática e programada em períodos de tempos pré-determinados</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Exemplo de implementação</h2>
+                        <ol>
+                            <li class="fragment">
+                                Instalação de um ambiente de GitLab
+                            </li>
+                            <li class="fragment">
+                                Criação de um repositório de exemplo que lê as variáveis de um arquivo <code>.env</code> e imprime na tela
+                            </li>
+                            <li class="fragment">
+                                Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor
+                            </li>
+                            <li class="fragment">
+                                Criação de um serviço de cofre
+                            </li>
+                            <li class="fragment">
+                                Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente
+                            </li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h3 class="h4">1. Instalação de um ambiente de GitLab</h3>
+                        <img src="img/01-gitlab.png" alt="Ambiente do GitLab">
+                    </section>
+                    <section>
+                        <h3 class="h4">2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
+                        <pre class="mb-0"><code class="php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
+$handler = fopen($file, 'r');
+while (($line = fgets($handler)) !== false) {
+    list($name, $value) = explode('=', $line, 2);
+    $_ENV[$name] = trim($value);
+}
+var_dump($_ENV);</code></pre>
+                        <div class="fragment">
+                            <p class="my-0">&#8595;</p>
+                            <pre class="my-0" style="box-shadow: none;"><b>array</b> <i>(size=7)</i>
+  'AWS_ACCESS_KEY_ID' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'id'</font> <i>(length=2)</i>
+  'AWS_SECRET_ACCESS_KEY' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'secret'</font> <i>(length=6)</i>
+  'AWS_DEFAULT_REGION' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'us-east-1'</font> <i>(length=9)</i>
+  'MONGO_HOST' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'localhost'</font> <i>(length=9)</i>
+  'MONGO_USER' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'mymongo'</font> <i>(length=7)</i>
+  'MONGO_PASSWORD' <font color="#888a85">=&gt;</font> <span class="small">string</span> <font color="#cc0000">'"CDyV_n,$(3x/=`ogv9R'</font> <i>(length=20)</i>
+</pre>
+                            <a href="https://github.com/vcampitelli/vault/blob/master/repository/index.php" class="smallest" target="_blank" rel="noopener">ver código-fonte do script</a>
+                        </div>
+                    </section>
+                    <section>
+                        <h3 class="h4">3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
+                        <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+  - apt-get -y update && apt-get install -y openssh-client
+  - eval $(ssh-agent -s)
+
+deploy_stage:
+  script:
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - scp -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+                        <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do arquivo</a>
+                    </section>
+                    <section>
+                        <h3 class="h4">4. Criação de um serviço de cofre</h3>
+                        <div class="r-stack">
+                            <pre class="fragment fade-out" data-fragment-index="0"><code class="json">{
+  "applications": {
+    "myrepository": {
+      "name": "My Repository",
+      "credentials": {
+        "staging": [1, 2, 3, 4, 5]
+      }
+    }
+  },
+  "credentials": {
+    "1": {
+      "name": "AWS_ACCESS_KEY_ID",
+      "value": "e829fb6fee0136da5967ff0a68efd44c"
+    },
+    "2": {
+      "name": "AWS_SECRET_ACCESS_KEY",
+      "value": "b9bafa4b4dd120b33b8eedbe1325e54f9650fd4deedb"
+    },
+    "3": {
+      "name": "MONGO_HOST",
+      "value": "localhost"
+    },
+    "4": {
+      "name": "MONGO_USER",
+      "value": "mongo"
+    },
+    "5": {
+      "name": "MONGO_PASS",
+      "value": "veez9aeg5OquiuT1aimek4xo"
+    }
+  }
+}
+</code></pre>
+                            <div class="fragment fade-down current-visible" data-fragment-index="0">
+                                <img src="img/04-vault.jpg" alt="Serviço de cofre" data-width="770">
+                            </div>
+                        </div>
+                        <a href="https://github.com/vcampitelli/vault/tree/master/api" class="smallest" target="_blank" rel="noopener">ver código-fonte do serviço</a>
+                    </section>
+                    <section>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente</h3>
+                        <div class="r-stack">
+                            <div class="fragment fade-out" data-fragment-index="0">
+                                <pre class="mb-0"><code class="python">#!/usr/bin/env python3
+
+import requests
+import sys
+
+VAULT_HOST=sys.argv[1]
+APP_NAME=sys.argv[2]
+APP_ENVIRONMENT=sys.argv[3]
+
+response = requests.get(
+    "%s/application/%s/credentials/%s" %
+    (VAULT_HOST, APP_NAME, APP_ENVIRONMENT)
+)
+
+response.raise_for_status()
+
+response = response.json()
+if 'data' in response and 'credentials' in response['data']:
+    credentials = response['data']['credentials']
+    if credentials:
+        for credential in credentials:
+            print("%s=%s" % (credential['name'], credential['value']))
+</code></pre>
+                                <a href="https://github.com/vcampitelli/vault/blob/master/client/vault-client.py" class="smallest" target="_blank" rel="noopener">
+                                    Ver script que consome a API do vault
+                                </a>
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="0">
+                                <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+  - apt-get -y update && apt-get install -y openssh-client
+  - eval $(ssh-agent -s)
+
+deploy_stage:
+  script:
+    <span class="fragment">- vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env</span>
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
+    - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+                                <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">
+                                    Ver <code>.gitlab-ci.yml</code> modificado para invocar o script
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <h2>Conclusão</h2>
+                    <h3>Devo usar um serviço de cofre quando há...</h3>
+                    <ul>
+                        <li>Muitas variáveis de ambiente espalhadas em repositórios;</li>
+                        <li>Necessidade de não exibir credenciais a alguns membros do repositório;</li>
+                        <li>Alta rotatividade de funcionários;</li>
+                        <li>Equipe de governança de TI e/ou segurança da informação <em>(GRC)</em> para controle e centralização.</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Obrigado!</h2>
+                    <div class="d-flex">
+                        <div>
+                            <h4>Slides</h4>
+                            <a href="https://viniciuscampitelli.com/vault/" target="_blank" rel="noopener">vcampitelli.github.io</a>
+                        </div>
+                        <div style="margin: 0 10px;">
+                            <h4>GitHub</h4>
+                            <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
+                        </div>
+                        <div>
+                            <h4>Twitter</h4>
+                            <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script src="reveal.js/dist/reveal.js"></script>
+        <script src="reveal.js/plugin/highlight/highlight.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
