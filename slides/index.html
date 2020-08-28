@@ -142,7 +142,7 @@
                     <section>
                         <div class="r-stack">
                             <img src="img/diagrams/01-problema.png" alt="Diagrama representando o cenário atual" class="fragment fade-out" data-fragment-index="0">
-                            <img src="img/diagrams/02-proposta.png" alt="Proposta de solução" class="fragment current-visible" data-fragment-index="0">
+                            <img src="img/diagrams/02-proposta.png" alt="Proposta de solução" class="fragment fade-down current-visible" data-fragment-index="0">
                         </div>
                     </section>
                 </section>
@@ -231,11 +231,11 @@
                         </ol>
                     </section>
                     <section>
-                        <h3>1. Instalação de um ambiente de GitLab</h3>
+                        <h3 class="h4">1. Instalação de um ambiente de GitLab</h3>
                         <img src="img/01-gitlab.png" alt="Ambiente do GitLab">
                     </section>
                     <section>
-                        <h3>2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
+                        <h3 class="h4">2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
                         <pre class="mb-0"><code class="php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
 $handler = fopen($file, 'r');
 while (($line = fgets($handler)) !== false) {
@@ -257,7 +257,7 @@ var_dump($_ENV);</code></pre>
                         </div>
                     </section>
                     <section>
-                        <h3>3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
+                        <h3 class="h4">3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
                         <pre class="mb-0"><code class="yaml" data-noescape>before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
@@ -269,19 +269,79 @@ deploy_stage:
                         <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do arquivo</a>
                     </section>
                     <section>
-                        <h3>4. Criação de um serviço de cofre</h3>
-                        <div class="d-flex half-columns">
-                            <div>
-                                <pre><code></code></pre>
+                        <h3 class="h4">4. Criação de um serviço de cofre</h3>
+                        <div class="r-stack">
+                            <pre class="fragment fade-out" data-fragment-index="0"><code class="json">{
+  "applications": {
+    "myrepository": {
+      "name": "My Repository",
+      "credentials": {
+        "staging": [1, 2, 3, 4, 5]
+      }
+    }
+  },
+  "credentials": {
+    "1": {
+      "name": "AWS_ACCESS_KEY_ID",
+      "value": "e829fb6fee0136da5967ff0a68efd44c"
+    },
+    "2": {
+      "name": "AWS_SECRET_ACCESS_KEY",
+      "value": "b9bafa4b4dd120b33b8eedbe1325e54f9650fd4deedb"
+    },
+    "3": {
+      "name": "MONGO_HOST",
+      "value": "localhost"
+    },
+    "4": {
+      "name": "MONGO_USER",
+      "value": "mongo"
+    },
+    "5": {
+      "name": "MONGO_PASS",
+      "value": "veez9aeg5OquiuT1aimek4xo"
+    }
+  }
+}
+</code></pre>
+                            <div class="fragment fade-down current-visible" data-fragment-index="0">
+                                <img src="img/04-vault.jpg" alt="Serviço de cofre" data-width="770">
                             </div>
-                            <div><img src="img/04-vault.jpg" alt="Serviço de cofre"></div>
                         </div>
-                        <a href="https://github.com/vcampitelli/vault/tree/master/api">github.com/vcampitelli/vault/tree/master/api</a>
+                        <a href="https://github.com/vcampitelli/vault/tree/master/api" class="smallest" target="_blank" rel="noopener">ver código-fonte do serviço</a>
                     </section>
                     <section>
-                        <h3>5. Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente</h3>
-                        <div class="d-flex half-columns">
-                            <div>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o serviço de cofre e injetar as variáveis de ambiente</h3>
+                        <div class="r-stack">
+                            <div class="fragment fade-out" data-fragment-index="0">
+                                <pre class="mb-0"><code class="python">#!/usr/bin/env python3
+
+import requests
+import sys
+
+VAULT_HOST=sys.argv[1]
+APP_NAME=sys.argv[2]
+APP_ENVIRONMENT=sys.argv[3]
+
+response = requests.get(
+    "%s/application/%s/credentials/%s" %
+    (VAULT_HOST, APP_NAME, APP_ENVIRONMENT)
+)
+
+response.raise_for_status()
+
+response = response.json()
+if 'data' in response and 'credentials' in response['data']:
+    credentials = response['data']['credentials']
+    if credentials:
+        for credential in credentials:
+            print("%s=%s" % (credential['name'], credential['value']))
+</code></pre>
+                                <a href="https://github.com/vcampitelli/vault/blob/master/client/vault-client.py" class="smallest" target="_blank" rel="noopener">
+                                    Ver script que consome a API do vault
+                                </a>
+                            </div>
+                            <div class="fragment fade-down" data-fragment-index="0">
                                 <pre class="mb-0"><code class="yaml" data-noescape>before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
@@ -292,10 +352,11 @@ deploy_stage:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
     - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+                                <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">
+                                    Ver <code>.gitlab-ci.yml</code> modificado para invocar o script
+                                </a>
                             </div>
-                            <div><img src="img/05-script.jpg" alt="Script de deploy no CI/CD do GitLab"></div>
                         </div>
-                        <a href="https://github.com/vcampitelli/vault/blob/master/client/vault-client.py">Ver código-fonte do script</a>
                     </section>
                 </section>
                 <section>
@@ -313,18 +374,15 @@ deploy_stage:
                     <div class="d-flex">
                         <div>
                             <h4>Slides</h4>
-                            <div><img src="img/qr.jpg" alt="QR Code"></div>
-                            <div>
-                                <a href="https://viniciuscampitelli.com/slides-apis-seguras/" target="_blank"
-                                    rel="noopener">viniciuscampitelli.com</a>
-                            </div>
+                            <a href="https://viniciuscampitelli.com/vault/" target="_blank" rel="noopener">vcampitelli.github.io</a>
+                        </div>
+                        <div style="margin: 0 10px;">
+                            <h4>GitHub</h4>
+                            <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
                         </div>
                         <div>
-                            <h4>Contato</h4>
-                            <div>GitHub e Twitter</div>
-                            <div>
-                                <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
-                            </div>
+                            <h4>Twitter</h4>
+                            <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
                         </div>
                     </div>
                 </section>
