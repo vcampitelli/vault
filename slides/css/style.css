@@ -2,22 +2,35 @@
  * Theme overriding
  */
 .reveal-viewport {
-  background: #fff;
+  background: #fafafa;
+  background: -moz-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, white), color-stop(100%, #ddd));
+  background: -webkit-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: -o-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: -ms-radial-gradient(center, circle cover, white 0%, #ddd 100%);
+  background: radial-gradient(center, circle cover, white 0%, #ddd 100%);
 }
 .reveal {
   font-family: "Source Sans Pro", monospace;
   font-size: 36px;
   font-weight: normal;
-  color: #333;
+  color: #444;
 }
 .slide-background.slide-title {
   background: #3fa2f9;
-  background: linear-gradient(135deg, #3fa2f9 0%, #3fa2f9 75%, #138ffb 75%, #138ffb 100%);
+  background: radial-gradient(center, circle cover, #3fa2f9 0%, #138ffb 100%);
+}
+.reveal a {
+  color: #138ffb;
+}
+.reveal a:hover,
+.reveal a:focus {
+  color: #3fa2f9;
 }
 .slide-title > h1 {
-  color: #fff;
+  color: #fff !important;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-  font-size: 2.7em;
+  font-size: 2.75em;
   font-weight: 700;
 }
 .reveal h1, .reveal .h1,
@@ -26,8 +39,9 @@
 .reveal h4, .reveal .h4,
 .reveal h5, .reveal .h5,
 .reveal h6, .reveal .h6 {
+  color: #333;
   font-family: "Bebas Neue", sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: none;
   font-variant: small-caps;
 }
@@ -82,7 +96,7 @@ h4[data-id="solution-title"] {
   line-height: 1;
   padding: 15px 0 10px;
   background: #fafafa;
-  border: 3px #aaa solid;
+  border: 2px #aaa solid;
   border-radius: 3px;
 }
 #governance > div > .d-flex > div > p {
@@ -99,7 +113,7 @@ h4[data-id="solution-title"] {
   margin-left: 0.5em;
 }
 #governance > div > p + .d-flex > .fragment {
-  line-height: 0.8;
+  line-height: 0.75;
   flex-grow: 1;
   color: #aaa;
 }
@@ -128,5 +142,21 @@ h4[data-id="solution-title"] {
   font-size: 0.5em;
 }
 svg path {
-  fill: #037FEB;
+  fill: #666;
+}
+
+/* Highlight */
+code[class*="language-"],
+pre[class*="language-"] {
+  font-size: 13px;
+}
+.token.string {
+  color: #f8c555;
+}
+.line-highlight:before {
+  color: #aaa;
+  box-shadow: none;
+}
+.line-highlight {
+  margin-top: 1.25em;
 }

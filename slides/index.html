@@ -9,14 +9,14 @@
         <link rel="stylesheet" href="reveal.js/dist/reset.css">
         <link rel="stylesheet" href="reveal.js/dist/reveal.css">
         <link rel="stylesheet" href="reveal.js/dist/theme/beige.css">
-        <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
 
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/prism.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <div class="reveal">
-            <div class="slides">
+            <section class="slides">
                 <section class="slide-title">
                     <h1>Protegendo suas Variáveis Sensíveis no Deploy</h1>
                 </section>
@@ -174,7 +174,7 @@
                     <section class="comparison" data-auto-animate>
                         <h2 data-id="comparison-title">Comparações</h2>
                         <h3 data-id="comparison-subtitle">Configuração das Variáveis de Ambiente</h3>
-                        <div class="d-flex half-columns">
+                        <div class="d-flex half-columns fragment">
                             <div>
                                 <h4 data-id="problem-title">Problemática</h4>
                                 <ul>
@@ -190,6 +190,14 @@
                                     <li>Acesso aos valores autorizado apenas aos gestores</li>
                                 </ul>
                             </div>
+                        </div>
+                    </section>
+                    <section class="comparison" data-auto-animate>
+                        <h2 data-id="comparison-title">Comparações</h2>
+                        <h3 data-id="comparison-subtitle">Configuração das Variáveis de Ambiente</h3>
+                        <div class="r-stack">
+                            <img src="img/gitlab_ci_vars_without_vault.png" class="my-0 fragment fade-out" data-fragment-index="0" data-width="877" style="max-height: none;">
+                            <img src="img/gitlab_ci_vars_with_vault.png" class="my-0 fragment" data-fragment-index="0" data-width="877" style="max-height: none;">
                         </div>
                     </section>
                     <section class="comparison" data-auto-animate>
@@ -257,7 +265,7 @@
                     </section>
                     <section>
                         <h3 class="h4">2. Criação de um repositório de exemplo que lê as variáveis de um arquivo .env e imprime na tela</h3>
-                        <pre class="mb-0"><code class="php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
+                        <pre class="mb-0"><code class="language-php">$file = __DIR__ . DIRECTORY_SEPARATOR . '.env';
 $handler = fopen($file, 'r');
 while (($line = fgets($handler)) !== false) {
     list($name, $value) = explode('=', $line, 2);
@@ -279,7 +287,7 @@ var_dump($_ENV);</code></pre>
                     </section>
                     <section>
                         <h3 class="h4">3. Configuração do CI/CD do GitLab para publicar o repositório acima em um servidor</h3>
-                        <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+                        <pre class="mb-0"><code class="language-yaml" data-noescape>before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
 
@@ -289,11 +297,10 @@ deploy_stage:
     - scp -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
                         <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do <code>.gitlab-ci.yml</code></a>
                     </section>
-                    <section>
+                    <section data-auto-animate>
                         <h3 class="h4">4. Criação de um Serviço de Vault</h3>
-                        <div class="r-stack">
-                            <div class="fragment fade-out" data-fragment-index="0">
-                                <pre class="mb-0"><code class="json">{
+                        <div>
+                            <pre class="mb-0"><code class="language-json">{
   "applications": {
     "myrepository": {
       "name": "My Repository",
@@ -327,17 +334,17 @@ deploy_stage:
 }</code></pre>
                                 <a href="https://github.com/vcampitelli/vault/tree/master/api" class="smallest" target="_blank" rel="noopener">ver código-fonte do serviço</a>
                             </div>
-                            <div class="fragment fade-down current-visible" data-fragment-index="0">
-                                <img src="img/04-vault.jpg" alt="Serviço de Vault" data-width="770">
-                            </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">4. Criação de um Serviço de Vault</h3>
+                        <div>
+                            <img src="img/04-vault.jpg" alt="Serviço de Vault" data-width="770">
                         </div>
                     </section>
-                    <section>
+                    <section data-auto-animate>
                         <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
-                        <div class="r-stack">
-                            <div class="fragment fade-out" data-fragment-index="0">
-                                <pre class="mb-0"><code class="python">#!/usr/bin/env python3
-
+                        <div>
+                            <pre class="mb-0"><code class="language-python">#!/usr/bin/env python3
 import requests
 import sys
 
@@ -349,9 +356,7 @@ response = requests.get(
     "%s/application/%s/credentials/%s" %
         (VAULT_HOST, APP_NAME, APP_ENVIRONMENT)
 )
-
 response.raise_for_status()
-
 response = response.json()
 if 'data' in response and 'credentials' in response['data']:
     credentials = response['data']['credentials']
@@ -363,14 +368,17 @@ if 'data' in response and 'credentials' in response['data']:
                                     ver script que consome a API do vault
                                 </a>
                             </div>
-                            <div class="fragment fade-down" data-fragment-index="0">
-                                <pre class="mb-0"><code class="yaml" data-noescape>before_script:
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
+                        <div>
+                            <pre class="mb-0" data-line="7"><code class="language-yaml">before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
 
 deploy_stage:
   script:
-    <span class="fragment">- vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env</span>
+    - vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
     - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
@@ -378,6 +386,11 @@ deploy_stage:
                                     ver <code>.gitlab-ci.yml</code> modificado para invocar o script
                                 </a>
                             </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
+                        <div>
+                            <img src="img/05-deploy.jpg" class="my-0" data-height="706">
                         </div>
                     </section>
                 </section>
@@ -424,7 +437,8 @@ deploy_stage:
         </div>
 
         <script src="reveal.js/dist/reveal.js"></script>
-        <script src="reveal.js/plugin/highlight/highlight.js"></script>
+<!--        <script src="reveal.js/plugin/highlight/highlight.js"></script>-->
+        <script src="js/prism.js"></script>
         <script src="js/app.js"></script>
     </body>
 </html>
