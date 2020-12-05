@@ -72,6 +72,12 @@
 /*
  * Custom elements
  */
+#img-profile {
+  margin-bottom: 0;
+  width: 250px;
+  border-radius: 50%;
+  background-color: #fff;
+}
 h2::after {
   content: "";
   display: block;
@@ -154,8 +160,7 @@ pre[class*="language-"] {
   color: #f8c555;
 }
 .line-highlight:before {
-  color: #aaa;
-  box-shadow: none;
+  display: none;
 }
 .line-highlight {
   margin-top: 1.25em;

@@ -11,8 +11,8 @@
         <link rel="stylesheet" href="reveal.js/dist/theme/beige.css">
 
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+Pro&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/prism.css">
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/prism.css?d=202012051600">
+        <link rel="stylesheet" href="css/style.css?d=202012051600">
     </head>
     <body>
         <div class="reveal">
@@ -24,23 +24,19 @@
                     <h2>Quem sou eu?</h2>
                     <div class="d-flex align-items-center">
                         <div class="mr-2">
-                            <img src="img/profile.png" alt="Vinícius Campitelli" alt="Vinícius Campitelli" class="mb-0"
-                                style="width: 250px">
+                            <img id="img-profile" src="img/profile.png" alt="Vinícius Campitelli" alt="Vinícius Campitelli">
                             <h4 class="h6">Vinícius Campitelli</h4>
                         </div>
                         <div>
                             <ul>
                                 <li>
-                                    Co-fundador do <a href="https://curseduca.com" target="_blank" rel="noopener">Curseduca</a>
-                                </li>
-                                <li>
                                     Membro do <a href="https://phpsp.org.br" target="_blank" rel="noopener">PHPSP</a>
                                 </li>
                                 <li>
-                                    GitHub e Twitter como <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
+                                    GitHub e Twitter: <a href="https://twitter.com/vcampitelli" target="_blank" rel="noopener">@vcampitelli</a>
                                 </li>
                                 <li>
-                                    Slides em <a href="https://viniciuscampitelli.com/vault/" target="_blank" rel="noopener">viniciuscampitelli.com</a>
+                                    Slides: <a href="https://viniciuscampitelli.com/vault/" target="_blank" rel="noopener">viniciuscampitelli.com</a>
                                 </li>
                             </ul>
                         </div>
@@ -272,6 +268,9 @@ while (($line = fgets($handler)) !== false) {
     $_ENV[$name] = trim($value);
 }
 var_dump($_ENV);</code></pre>
+                        <p class="smallest">
+                            Em sistemas reais, utilize um pacote para isso, como o <a href="https://github.com/vlucas/phpdotenv">vlucas/phpdotenv</a>
+                        </p>
                         <div class="fragment">
                             <p class="my-0">&#8595;</p>
                             <pre class="my-0" style="box-shadow: none;"><b>array</b> <i>(size=7)</i>
@@ -294,7 +293,7 @@ var_dump($_ENV);</code></pre>
 deploy_stage:
   script:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
-    - scp -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+    - scp -r . $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
                         <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">ver código-fonte do <code>.gitlab-ci.yml</code></a>
                     </section>
                     <section data-auto-animate>
@@ -372,7 +371,23 @@ if 'data' in response and 'credentials' in response['data']:
                     <section data-auto-animate>
                         <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
                         <div>
-                            <pre class="mb-0" data-line="7"><code class="language-yaml">before_script:
+                            <pre data-id="script-ci-yml" data-line class="mb-0"><code class="language-yaml">before_script:
+  - apt-get -y update && apt-get install -y openssh-client
+  - eval $(ssh-agent -s)
+
+deploy_stage:
+  script:
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - scp -r . $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+                            <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener" data-id="script-link">
+                                ver <code>.gitlab-ci.yml</code> modificado para invocar o script
+                            </a>
+                        </div>
+                    </section>
+                    <section data-auto-animate>
+                        <h3 class="h4">5. Desenvolvimento de um script invocado no CI/CD para consultar o Serviço de Vault e injetar as Variáveis de Ambiente</h3>
+                        <div>
+                            <pre data-id="script-ci-yml" class="mb-0" data-line="7"><code class="language-yaml" style="overflow: hidden">before_script:
   - apt-get -y update && apt-get install -y openssh-client
   - eval $(ssh-agent -s)
 
@@ -380,9 +395,8 @@ deploy_stage:
   script:
     - vault-client $VAULT_HOST $CI_PROJECT_NAME staging > .env
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
-    - scp -P22 -r .env $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY
-    - scp -P22 -r * $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
-                            <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener">
+    - scp -r . $SSH_USER@$SSH_HOST:$SSH_APP_DIRECTORY</code></pre>
+                            <a href="https://github.com/vcampitelli/vault/blob/master/repository/.gitlab-ci.yml" class="smallest" target="_blank" rel="noopener" data-id="script-link">
                                 ver <code>.gitlab-ci.yml</code> modificado para invocar o script
                             </a>
                         </div>
@@ -435,9 +449,8 @@ deploy_stage:
             </section>
         </div>
 
+<!--        <script src="js/prism.js?d=202012051600"></script>-->
         <script src="reveal.js/dist/reveal.js"></script>
-<!--        <script src="reveal.js/plugin/highlight/highlight.js"></script>-->
-        <script src="js/prism.js"></script>
         <script src="js/app.js"></script>
     </body>
 </html>

@@ -13,9 +13,6 @@ Reveal.initialize({
  * @link https://github.com/hakimel/reveal.js/issues/806#issuecomment-222417787
  */
 Reveal.addEventListener( 'ready', event => {
-    // if ( window.location.search.match( /print-pdf/gi ) ) {
-        // $('.slide-background').append(header);
-    // }
     const $headerTitle = document.createElement('h2'),
         $headerSubtitle = document.createElement('p'),
         $header = document.createElement('div');
@@ -53,7 +50,6 @@ Reveal.addEventListener( 'ready', event => {
 
     Reveal.on( 'slidechanged', event => {
         changeHeader(event.currentSlide);
-        console.log(event.indexh, event.indexv)
     });
 
     // @see https://stackoverflow.com/a/26893663
