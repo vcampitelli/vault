@@ -72,6 +72,11 @@
 /*
  * Custom elements
  */
+#profile-pic {
+  margin-bottom: 0;
+  width: 250px;
+  border-radius: 50%;
+}
 h2::after {
   content: "";
   display: block;
