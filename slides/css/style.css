@@ -135,6 +135,9 @@ h4[data-id="solution-title"] {
   flex-basis: 33%;
   flex-grow: 0;
 }
+.smaller {
+  font-size: 0.85em;
+}
 .small {
   font-size: 0.7em;
 }
